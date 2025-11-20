@@ -93,3 +93,14 @@ Presentation Layer (Views)
 
 
 This structure improves maintainability, scalability, and separation of concerns.
+
+🧰 Technology Stack
+Category	Technology
+Framework	ASP.NET Core MVC
+Language	C#
+Database	SQL Server
+ORM	Entity Framework Core
+Authentication	ASP.NET Core Identity
+Frontend	Bootstrap 5, HTML, CSS
+IDE	Visual Studio 2022
+Version Control	Git & GitHub
