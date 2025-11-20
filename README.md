@@ -119,3 +119,12 @@ Visual Studio will automatically restore NuGet packages.
 If not, run:
 
 dotnet restore
+
+🗄️ Database Configuration
+Update the Connection String
+
+In appsettings.json, update your connection string:
+
+"ConnectionStrings": {
+  "DefaultConnection": "Server=YOUR_SERVER;Database=ClaimsDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=true;"
+}
