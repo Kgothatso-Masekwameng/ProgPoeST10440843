@@ -1,0 +1,453 @@
+﻿@{
+    ViewData["Title"] = "Home - Claims Management";
+}
+
+<style>
+    .hero-section {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 0;
+    }
+
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 50%, rgba(123, 97, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0, 245, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(255, 46, 122, 0.05) 0%, transparent 50%);
+        z-index: -1;
+    }
+
+    .hero-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 700;
+        font-size: 3.5rem;
+        background: linear-gradient(135deg, var(--text-primary), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 3rem;
+        text-shadow: 0 4px 20px rgba(0, 245, 255, 0.3);
+    }
+
+    .portal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .portal-card {
+        background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+        }
+
+        .portal-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .portal-card:hover::after {
+            left: 100%;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 20px 50px var(--glow-cyan), 0 0 0 1px rgba(0, 245, 255, 0.1);
+        }
+
+    .portal-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+        transition: all 0.4s ease;
+    }
+
+    .portal-card:hover .portal-icon {
+        transform: scale(1.1) translateY(-5px);
+    }
+
+    .portal-lecturer .portal-icon {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .portal-coordinator .portal-icon {
+        background: linear-gradient(135deg, var(--success-emerald), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .portal-manager .portal-icon {
+        background: linear-gradient(135deg, #ffd166, var(--accent-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .portal-hr .portal-icon {
+        background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .portal-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 600;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .portal-description {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .portal-btn {
+        background: transparent;
+        border: 1px solid;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .portal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .portal-btn:hover::before {
+            left: 100%;
+        }
+
+    .portal-lecturer .portal-btn {
+        color: var(--primary-cyan);
+        border-color: var(--primary-cyan);
+        box-shadow: 0 4px 15px var(--glow-cyan);
+    }
+
+        .portal-lecturer .portal-btn:hover {
+            background: var(--primary-cyan);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--glow-cyan);
+        }
+
+    .portal-coordinator .portal-btn {
+        color: var(--success-emerald);
+        border-color: var(--success-emerald);
+        box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+    }
+
+        .portal-coordinator .portal-btn:hover {
+            background: var(--success-emerald);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+        }
+
+    .portal-manager .portal-btn {
+        color: #ffd166;
+        border-color: #ffd166;
+        box-shadow: 0 4px 15px rgba(255, 209, 102, 0.3);
+    }
+
+        .portal-manager .portal-btn:hover {
+            background: #ffd166;
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 209, 102, 0.4);
+        }
+
+    .portal-hr .portal-btn {
+        color: var(--primary-purple);
+        border-color: var(--primary-purple);
+        box-shadow: 0 4px 15px var(--glow-purple);
+    }
+
+        .portal-hr .portal-btn:hover {
+            background: var(--primary-purple);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--glow-purple);
+        }
+
+    .stats-overview {
+        margin-top: 4rem;
+        padding: 2rem;
+        background: var(--bg-surface);
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+    }
+
+    .stats-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        background: var(--bg-elevated);
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+        .stat-item:hover {
+            border-color: var(--primary-cyan);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--glow-cyan);
+        }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Animation for cards */
+    @@keyframes cardSlideIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .portal-card {
+        animation: cardSlideIn 0.6s ease-out;
+    }
+
+        .portal-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .portal-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .portal-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .portal-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .hero-title
+
+    {
+        font-size: 2.5rem;
+    }
+
+    .portal-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .portal-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .portal-icon {
+        font-size: 3rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    }
+
+    @@media (max-width: 480px) {
+        .hero-title
+
+    {
+        font-size: 2rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="container">
+        <h1 class="hero-title">Claims Management System</h1>
+
+        <div class="portal-grid">
+            <!-- Lecturer Portal -->
+            <div class="portal-card portal-lecturer">
+                <i class="fas fa-user-graduate portal-icon"></i>
+                <h3 class="portal-title">Lecturer Portal</h3>
+                <p class="portal-description">Submit and track your claims with real-time status updates</p>
+                <a href="@Url.Action("Index", "Lecturer")" class="portal-btn">
+                    Access Portal
+                </a>
+            </div>
+
+            <!-- Coordinator Portal -->
+            <div class="portal-card portal-coordinator">
+                <i class="fas fa-user-tie portal-icon"></i>
+                <h3 class="portal-title">Coordinator Portal</h3>
+                <p class="portal-description">Review and verify claims with advanced analytics</p>
+                <a href="@Url.Action("PendingClaims", "Coordinator")" class="portal-btn">
+                    Access Portal
+                </a>
+            </div>
+
+            <!-- Manager Portal -->
+            <div class="portal-card portal-manager">
+                <i class="fas fa-user-cog portal-icon"></i>
+                <h3 class="portal-title">Manager Portal</h3>
+                <p class="portal-description">Final approval and oversight of all claims processing</p>
+                <a href="@Url.Action("PendingClaims", "Manager")" class="portal-btn">
+                    Access Portal
+                </a>
+            </div>
+
+            <!-- HR Portal -->
+            <div class="portal-card portal-hr">
+                <i class="fas fa-hand-holding-usd portal-icon"></i>
+                <h3 class="portal-title">HR Portal</h3>
+                <p class="portal-description">Process payments and manage financial settlements</p>
+                <a href="@Url.Action("Dashboard", "HR")" class="portal-btn">
+                    Access Portal
+                </a>
+            </div>
+        </div>
+
+        <!-- System Overview Stats -->
+        <div class="stats-overview">
+            <h3 class="stats-title">System Overview</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Total Claims</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">89%</div>
+                    <div class="stat-label">Approval Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24h</div>
+                    <div class="stat-label">Avg. Processing</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">98.7%</div>
+                    <div class="stat-label">System Uptime</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add interactive hover effects
+        const cards = document.querySelectorAll('.portal-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Animate stats counter (optional - for real data)
+        const statValues = document.querySelectorAll('.stat-value');
+
+        statValues.forEach(stat => {
+            const originalText = stat.textContent;
+            if (!isNaN(originalText.replace('%', '').replace('h', ''))) {
+                // This would be replaced with actual API data in production
+                console.log('Stat value:', originalText);
+            }
+        });
+    });
+</script>

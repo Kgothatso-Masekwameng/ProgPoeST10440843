@@ -1,0 +1,747 @@
+﻿@model HRDashboardViewModel
+@{
+    ViewData["Title"] = "HR Dashboard";
+}
+
+<style>
+    .hr-dashboard {
+        min-height: 100vh;
+        background: var(--bg-primary);
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--bg-surface), var(--bg-elevated));
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+        }
+
+    .dashboard-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--text-primary), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+    }
+
+    .dashboard-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin: 0.5rem 0 0 0;
+    }
+
+    /* Statistics Grid */
+    .stats-grid-hr {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card-hr {
+        background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card-hr::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+        }
+
+        .stat-card-hr:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 12px 40px var(--glow-cyan);
+        }
+
+    .stat-icon-hr {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .stat-card-total .stat-icon-hr {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-approved .stat-icon-hr {
+        background: linear-gradient(135deg, var(--success-emerald), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-pending .stat-icon-hr {
+        background: linear-gradient(135deg, #ffd166, #ff9e44);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-amount .stat-icon-hr {
+        background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-settled .stat-icon-hr {
+        background: linear-gradient(135deg, var(--success-emerald), #00a896);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-value-hr {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .stat-card-total .stat-value-hr {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-approved .stat-value-hr {
+        background: linear-gradient(135deg, var(--success-emerald), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-pending .stat-value-hr {
+        background: linear-gradient(135deg, #ffd166, #ff9e44);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-amount .stat-value-hr {
+        background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-settled .stat-value-hr {
+        background: linear-gradient(135deg, var(--success-emerald), #00a896);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label-hr {
+        color: var(--text-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.8rem;
+    }
+
+    /* Quick Actions */
+    .quick-actions-card {
+        background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .quick-actions-header {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .quick-actions-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        padding: 2rem;
+    }
+
+    .action-btn {
+        background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 8px 25px var(--glow-cyan);
+        }
+
+    .action-btn-settle {
+        border-left: 4px solid var(--success-emerald);
+    }
+
+    .action-btn-history {
+        border-left: 4px solid var(--primary-cyan);
+    }
+
+    .action-btn-report {
+        border-left: 4px solid #ffd166;
+    }
+
+    .action-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .action-btn-settle .action-icon {
+        color: var(--success-emerald);
+    }
+
+    .action-btn-history .action-icon {
+        color: var(--primary-cyan);
+    }
+
+    .action-btn-report .action-icon {
+        color: #ffd166;
+    }
+
+    .action-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .action-count {
+        background: var(--primary-cyan);
+        color: var(--bg-primary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .action-btn-settle .action-count {
+        background: var(--success-emerald);
+    }
+
+    .action-btn-history .action-count {
+        background: var(--primary-cyan);
+    }
+
+    .action-btn-report .action-count {
+        background: #ffd166;
+        color: var(--bg-primary);
+    }
+
+    /* Dashboard Panels */
+    .dashboard-panels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-panel {
+        background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .panel-header {
+        background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+    }
+
+    .panel-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .panel-warning .panel-header {
+        border-left: 4px solid #ffd166;
+    }
+
+    .panel-info .panel-header {
+        border-left: 4px solid var(--primary-cyan);
+    }
+
+    .panel-body {
+        padding: 1.5rem 2rem;
+    }
+
+    /* List Groups */
+    .list-group-tech {
+        background: transparent;
+        border: none;
+    }
+
+    .list-item-tech {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 0.75rem;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--text-primary);
+        display: block;
+    }
+
+        .list-item-tech:hover {
+            border-color: var(--primary-cyan);
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px var(--glow-cyan);
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .list-item-tech:last-child {
+            margin-bottom: 0;
+        }
+
+    .claim-id {
+        font-weight: 700;
+        color: var(--primary-cyan);
+    }
+
+    .claim-amount {
+        background: linear-gradient(135deg, var(--success-emerald), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 600;
+    }
+
+    .claim-meta {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+    }
+
+    .view-all-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin-top: 1rem;
+    }
+
+        .view-all-btn:hover {
+            border-color: var(--primary-cyan);
+            color: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--glow-cyan);
+        }
+
+    /* Empty States */
+    .empty-state-panel {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    /* Alert Styling */
+    .alert-hr {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        border-left: 4px solid var(--success-emerald);
+        color: var(--text-primary);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+        .alert-hr i {
+            margin-right: 0.75rem;
+            color: var(--success-emerald);
+        }
+
+    /* Animations */
+    @@keyframes slideInDashboard {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .stat-card-hr, .quick-actions-card, .dashboard-panel {
+        animation: slideInDashboard 0.6s ease-out;
+    }
+
+        .stat-card-hr:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .stat-card-hr:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .stat-card-hr:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .stat-card-hr:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .stat-card-hr:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-header
+
+    {
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+    }
+
+    .stats-grid-hr {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .actions-grid {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+    }
+
+    .dashboard-panels {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-body {
+        padding: 1rem 1.5rem;
+    }
+
+    }
+
+    @@media (max-width: 480px) {
+        .stats-grid-hr
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card-hr {
+        padding: 1.5rem;
+    }
+
+    }
+</style>
+
+<div class="hr-dashboard">
+    <div class="container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-user-tie me-3"></i>HR Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Manage claims settlements and payment processing</p>
+        </div>
+
+        <!-- Alerts -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert-hr" role="alert">
+                <i class="fas fa-check-circle"></i>@TempData["SuccessMessage"]
+                <button type="button" class="btn-close btn-close-white float-end" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid-hr">
+            <div class="stat-card-hr stat-card-total">
+                <i class="fas fa-file-invoice stat-icon-hr"></i>
+                <div class="stat-value-hr">@Model.TotalClaims</div>
+                <div class="stat-label-hr">Total Claims</div>
+            </div>
+            <div class="stat-card-hr stat-card-approved">
+                <i class="fas fa-check-circle stat-icon-hr"></i>
+                <div class="stat-value-hr">@Model.ApprovedClaims</div>
+                <div class="stat-label-hr">Approved</div>
+            </div>
+            <div class="stat-card-hr stat-card-pending">
+                <i class="fas fa-clock stat-icon-hr"></i>
+                <div class="stat-value-hr">@Model.PendingSettlement</div>
+                <div class="stat-label-hr">Pending Settlement</div>
+            </div>
+            <div class="stat-card-hr stat-card-amount">
+                <i class="fas fa-money-bill-wave stat-icon-hr"></i>
+                <div class="stat-value-hr">R @Model.PendingAmount.ToString("N2")</div>
+                <div class="stat-label-hr">Pending Amount</div>
+            </div>
+            <div class="stat-card-hr stat-card-settled">
+                <i class="fas fa-receipt stat-icon-hr"></i>
+                <div class="stat-value-hr">@Model.SettledClaims</div>
+                <div class="stat-label-hr">Settled Claims</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions-card">
+            <div class="quick-actions-header">
+                <h3 class="quick-actions-title">
+                    <i class="fas fa-bolt"></i>Quick Actions
+                </h3>
+            </div>
+            <div class="actions-grid">
+                <a href="@Url.Action("SettlementQueue")" class="action-btn action-btn-settle">
+                    <i class="fas fa-hand-holding-usd action-icon"></i>
+                    <div class="action-title">
+                        Settle Claims
+                        <span class="action-count">@Model.PendingSettlement</span>
+                    </div>
+                    <small class="text-muted">Process pending claim settlements</small>
+                </a>
+                <a href="@Url.Action("SettledClaims")" class="action-btn action-btn-history">
+                    <i class="fas fa-history action-icon"></i>
+                    <div class="action-title">View Settled Claims</div>
+                    <small class="text-muted">Review completed settlements</small>
+                </a>
+                <a href="@Url.Action("GeneratePaymentReport")" class="action-btn action-btn-report">
+                    <i class="fas fa-download action-icon"></i>
+                    <div class="action-title">Payment Report</div>
+                    <small class="text-muted">Generate financial reports</small>
+                </a>
+            </div>
+        </div>
+
+        <!-- Dashboard Panels -->
+        <div class="dashboard-panels">
+            <!-- Ready for Settlement -->
+            <div class="dashboard-panel panel-warning">
+                <div class="panel-header">
+                    <h4 class="panel-title">
+                        <i class="fas fa-clock"></i>Ready for Settlement
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    @if (Model.ReadyForSettlement.Any())
+                    {
+                        <div class="list-group-tech">
+                            @foreach (var claim in Model.ReadyForSettlement.Take(5))
+                            {
+                                <a href="@Url.Action("SettleClaim", new { id = claim.Id })" class="list-item-tech">
+                                    <div class="d-flex w-100 justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <span class="claim-id">#@claim.Id</span>
+                                            <span class="text-muted">-</span>
+                                            <span>@claim.LecturerName</span>
+                                        </div>
+                                        <span class="claim-amount">R @claim.TotalAmount.ToString("N2")</span>
+                                    </div>
+                                    <div class="claim-meta">
+                                        <i class="fas fa-calendar me-1"></i>Submitted: @claim.SubmissionDate.ToString("dd/MM/yyyy")
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                        @if (Model.ReadyForSettlement.Count > 5)
+                        {
+                            <div class="text-center">
+                                <a href="@Url.Action("SettlementQueue")" class="view-all-btn">
+                                    <i class="fas fa-eye me-2"></i>View All (@Model.ReadyForSettlement.Count)
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state-panel">
+                            <i class="fas fa-inbox empty-icon"></i>
+                            <p>No claims ready for settlement</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-panel panel-info">
+                <div class="panel-header">
+                    <h4 class="panel-title">
+                        <i class="fas fa-chart-line"></i>Recent Activity
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    @if (Model.RecentApprovedClaims.Any())
+                    {
+                        <div class="list-group-tech">
+                            @foreach (var claim in Model.RecentApprovedClaims)
+                            {
+                                <div class="list-item-tech">
+                                    <div class="d-flex w-100 justify-content-between align-items-start mb-2">
+                                        <h6 class="mb-0">Claim <span class="claim-id">#@claim.Id</span> Approved</h6>
+                                        <span class="claim-amount">R @claim.TotalAmount.ToString("N2")</span>
+                                    </div>
+                                    <p class="mb-2">@claim.LecturerName</p>
+                                    <div class="claim-meta">
+                                        <i class="fas fa-user-tie me-1"></i>Manager approved on @DateTime.Now.ToString("dd/MM/yyyy")
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state-panel">
+                            <i class="fas fa-chart-bar empty-icon"></i>
+                            <p>No recent activity</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover animations to stat cards
+            const statCards = document.querySelectorAll('.stat-card-hr');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-5px) scale(1)';
+                });
+            });
+
+            // Add click animations to action buttons
+            const actionBtns = document.querySelectorAll('.action-btn');
+            actionBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    // Add ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.5);
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                    `;
+
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // Auto-refresh dashboard data every 60 seconds
+            setInterval(() => {
+                console.log('🔄 Refreshing HR dashboard data...');
+                // In a real application, you would fetch updated data via AJAX
+                // For now, we'll just reload the page
+                // location.reload();
+            }, 60000);
+
+            // Add CSS for ripple effect
+            const style = document.createElement('style');
+            style.textContent = `
+                @@keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+}

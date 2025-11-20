@@ -1,0 +1,854 @@
+﻿@model List<Claim>
+@using ClaimsManagementApp.Models
+@{
+    ViewData["Title"] = "My Claims";
+}
+
+<style>
+    .claims-header {
+        background: linear-gradient(135deg, var(--bg-surface), var(--bg-elevated));
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .claims-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+        }
+
+    .claims-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--text-primary), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .claims-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .btn-submit-claim {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        border: none;
+        border-radius: 15px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px var(--glow-cyan);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-submit-claim::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-submit-claim:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit-claim:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px var(--glow-purple);
+        }
+
+    /* Statistics Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 12px 40px var(--glow-cyan);
+        }
+
+    .stat-card-total {
+        border-left: 4px solid var(--primary-cyan);
+    }
+
+    .stat-card-pending {
+        border-left: 4px solid #ffd166;
+    }
+
+    .stat-card-approved {
+        border-left: 4px solid var(--success-emerald);
+    }
+
+    .stat-card-rejected {
+        border-left: 4px solid var(--accent-pink);
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card-total .stat-value {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-pending .stat-value {
+        background: linear-gradient(135deg, #ffd166, #ff9e44);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-approved .stat-value {
+        background: linear-gradient(135deg, var(--success-emerald), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-rejected .stat-value {
+        background: linear-gradient(135deg, var(--accent-pink), #ff6b9c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .stat-icon {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        opacity: 0.2;
+        font-size: 2.5rem;
+    }
+
+    /* Modern Alerts */
+    .alert-tech {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        border-left: 4px solid;
+        color: var(--text-primary);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .alert-success {
+        border-left-color: var(--success-emerald);
+    }
+
+    .alert-danger {
+        border-left-color: var(--accent-pink);
+    }
+
+    .alert-tech i {
+        margin-right: 0.75rem;
+    }
+
+    /* Claims Table */
+    .claims-table-container {
+        background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .table-header {
+        background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+    }
+
+    .table-title {
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .refresh-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .refresh-badge {
+        background: var(--bg-primary);
+        color: var(--text-secondary);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        font-size: 0.8rem;
+    }
+
+    .switch-tech {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+        .switch-tech input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider-tech {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--border-color);
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider-tech:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background: var(--text-secondary);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider-tech {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+    }
+
+        input:checked + .slider-tech:before {
+            transform: translateX(26px);
+            background: var(--text-primary);
+        }
+
+    /* Table Styling */
+    .table-tech {
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+        .table-tech thead th {
+            background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+            border-bottom: 2px solid var(--border-color);
+            color: var(--primary-cyan);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+            padding: 1.5rem;
+        }
+
+        .table-tech tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+            .table-tech tbody tr:hover {
+                background: rgba(0, 245, 255, 0.05);
+                transform: translateX(5px);
+            }
+
+        .table-tech tbody td {
+            padding: 1.5rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid;
+    }
+
+    .status-pending {
+        background: rgba(255, 209, 102, 0.1);
+        color: #ffd166;
+        border-color: #ffd166;
+    }
+
+    .status-coordinator-approved {
+        background: rgba(0, 245, 255, 0.1);
+        color: var(--primary-cyan);
+        border-color: var(--primary-cyan);
+    }
+
+    .status-manager-approved {
+        background: rgba(0, 212, 170, 0.1);
+        color: var(--success-emerald);
+        border-color: var(--success-emerald);
+    }
+
+    .status-rejected {
+        background: rgba(255, 46, 122, 0.1);
+        color: var(--accent-pink);
+        border-color: var(--accent-pink);
+    }
+
+    .status-settled {
+        background: rgba(123, 97, 255, 0.1);
+        color: var(--primary-purple);
+        border-color: var(--primary-purple);
+    }
+
+    /* Progress Bars */
+    .progress-tech {
+        background: var(--bg-elevated);
+        border-radius: 10px;
+        height: 6px;
+        overflow: hidden;
+        width: 100px;
+    }
+
+    .progress-bar-tech {
+        border-radius: 10px;
+        transition: width 0.6s ease;
+        position: relative;
+    }
+
+    .progress-pending {
+        background: linear-gradient(90deg, #ffd166, #ff9e44);
+    }
+
+    .progress-coordinator {
+        background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple));
+    }
+
+    .progress-manager {
+        background: linear-gradient(90deg, var(--success-emerald), var(--primary-cyan));
+    }
+
+    .progress-complete {
+        background: linear-gradient(90deg, var(--primary-purple), var(--accent-pink));
+    }
+
+    .progress-rejected {
+        background: linear-gradient(90deg, var(--accent-pink), #ff6b9c);
+    }
+
+    /* Action Buttons */
+    .btn-action {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.5rem;
+        color: var(--text-secondary);
+        transition: all 0.3s ease;
+        margin: 0 0.25rem;
+    }
+
+        .btn-action:hover {
+            border-color: var(--primary-cyan);
+            color: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--glow-cyan);
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.3;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    /* Table Footer */
+    .table-footer {
+        background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+        border-top: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+        color: var(--text-secondary);
+    }
+
+    /* Animations */
+    @@keyframes slideInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .stat-card, .claims-table-container {
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    .table-tech tbody tr {
+        animation: slideInUp 0.4s ease-out;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .claims-header
+
+    {
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .claims-title {
+        font-size: 2rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .table-header {
+        padding: 1rem;
+    }
+
+    .refresh-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    }
+</style>
+
+<div class="container">
+    <!-- Header Section -->
+    <div class="claims-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="claims-title">My Claims</h1>
+                <p class="claims-subtitle">Track and manage your submitted claims in real-time</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="@Url.Action("SubmitClaim")" class="btn btn-submit-claim">
+                    <i class="fas fa-plus-circle me-2"></i>Submit New Claim
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-total">
+            <i class="fas fa-file-invoice stat-icon"></i>
+            <div class="stat-value">@Model.Count</div>
+            <div class="stat-label">Total Claims</div>
+        </div>
+        <div class="stat-card stat-card-pending">
+            <i class="fas fa-clock stat-icon"></i>
+            <div class="stat-value">@Model.Count(c => c.Status == ClaimStatus.Pending)</div>
+            <div class="stat-label">Pending Review</div>
+        </div>
+        <div class="stat-card stat-card-approved">
+            <i class="fas fa-check-circle stat-icon"></i>
+            <div class="stat-value">@Model.Count(c => c.Status == ClaimStatus.ApprovedByManager || c.Status == ClaimStatus.Settled)</div>
+            <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat-card stat-card-rejected">
+            <i class="fas fa-times-circle stat-icon"></i>
+            <div class="stat-value">@Model.Count(c => c.Status == ClaimStatus.RejectedByCoordinator || c.Status == ClaimStatus.RejectedByManager)</div>
+            <div class="stat-label">Rejected</div>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-tech alert-success" role="alert">
+            <i class="fas fa-check-circle"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close btn-close-white float-end" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert-tech alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close btn-close-white float-end" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Claims Table -->
+    @if (!Model.Any())
+    {
+        <div class="claims-table-container">
+            <div class="empty-state">
+                <i class="fas fa-inbox empty-icon"></i>
+                <h3 class="empty-title">No Claims Submitted</h3>
+                <p class="mb-4">You haven't submitted any claims yet. Get started by submitting your first claim.</p>
+                <a href="@Url.Action("SubmitClaim")" class="btn btn-submit-claim">
+                    <i class="fas fa-plus-circle me-2"></i>Submit Your First Claim
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="claims-table-container">
+            <div class="table-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h3 class="table-title">Claim History</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="refresh-controls">
+                            <span class="refresh-badge">
+                                <i class="fas fa-sync-alt me-1"></i>Auto-refreshes every 30s
+                            </span>
+                            <label class="switch-tech">
+                                <input type="checkbox" id="autoRefreshSwitch" checked>
+                                <span class="slider-tech"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-tech">
+                    <thead>
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Submitted</th>
+                            <th>Hours</th>
+                            <th>Rate</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var claim in Model.OrderByDescending(c => c.SubmissionDate))
+                        {
+                            <tr>
+                                <td class="fw-bold">#@claim.Id</td>
+                                <td>
+                                    <div>@claim.SubmissionDate.ToString("dd/MM/yyyy")</div>
+                                    <small class="text-muted">@claim.SubmissionDate.ToString("HH:mm")</small>
+                                </td>
+                                <td>@claim.HoursWorked</td>
+                                <td>R @claim.HourlyRate.ToString("N2")</td>
+                                <td>
+                                    <strong style="background: linear-gradient(135deg, var(--success-emerald), var(--primary-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                        R @claim.TotalAmount.ToString("N2")
+                                    </strong>
+                                </td>
+                                <td>
+                                    <span class="status-badge @GetStatusBadgeClass(claim.Status)" data-claim-id="@claim.Id">
+                                        <i class="@GetStatusIcon(claim.Status) me-1"></i>
+                                        @GetStatusDisplayText(claim.Status)
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="progress-tech">
+                                        <div class="progress-bar-tech @GetProgressBarClass(claim.Status)"
+                                             style="width: @GetProgressPercentage(claim.Status)%"></div>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">@GetLastActionTime(claim)</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("TrackClaim", new { id = claim.Id })"
+                                           class="btn btn-action"
+                                           data-bs-toggle="tooltip"
+                                           title="Track Claim Progress">
+                                            <i class="fas fa-chart-line"></i>
+                                        </a>
+                                        @if (claim.Documents?.Any() == true)
+                                        {
+                                            <button class="btn btn-action"
+                                                    data-bs-toggle="tooltip"
+                                                    title="@claim.Documents.Count document(s) attached">
+                                                <i class="fas fa-paperclip"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <small>
+                            Showing @Model.Count claim@(Model.Count != 1 ? "s" : "")
+                        </small>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <small>
+                            <i class="fas fa-clock me-1"></i>Last updated: @DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // Auto-refresh functionality
+        let refreshInterval;
+        const autoRefreshSwitch = document.getElementById('autoRefreshSwitch');
+
+        function startAutoRefresh() {
+            refreshInterval = setInterval(function() {
+                console.log('🔄 Refreshing claims data...');
+                // Add refresh animation
+                document.querySelector('.refresh-badge').innerHTML = '<i class="fas fa-sync-alt fa-spin me-1"></i>Refreshing...';
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }, 30000);
+        }
+
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                document.querySelector('.refresh-badge').innerHTML = '<i class="fas fa-sync-alt me-1"></i>Auto-refresh off';
+            }
+        }
+
+        // Initialize auto-refresh
+        if (autoRefreshSwitch && autoRefreshSwitch.checked) {
+            startAutoRefresh();
+        }
+
+        // Toggle auto-refresh
+        if (autoRefreshSwitch) {
+            autoRefreshSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    startAutoRefresh();
+                } else {
+                    stopAutoRefresh();
+                }
+            });
+        }
+
+        // Enhanced animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate table rows with stagger
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Update last updated time every minute
+            setInterval(updateLastUpdatedTime, 60000);
+        });
+
+        function updateLastUpdatedTime() {
+            const now = new Date();
+            const timeElements = document.querySelectorAll('.table-footer small:last-child');
+            timeElements.forEach(el => {
+                el.innerHTML = `<i class="fas fa-clock me-1"></i>Last updated: ${now.toLocaleString('en-GB')}`;
+            });
+        }
+
+        // Enhanced status update function
+        function refreshClaimStatus(claimId) {
+            fetch(`/Lecturer/GetClaimStatus/${claimId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    const statusBadge = document.querySelector(`[data-claim-id="${claimId}"]`);
+                    if (statusBadge) {
+                        // Add update animation
+                        statusBadge.style.transform = 'scale(1.1)';
+                        statusBadge.style.background = 'rgba(0, 245, 255, 0.2)';
+
+                        setTimeout(() => {
+                            statusBadge.className = `status-badge ${data.statusClass}`;
+                            statusBadge.innerHTML = `<i class="${data.statusIcon} me-1"></i>${data.statusText}`;
+                            statusBadge.style.transform = 'scale(1)';
+                            statusBadge.style.background = '';
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing claim status:', error);
+                });
+        }
+
+        // Add hover effects to stat cards
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(-5px) scale(1)';
+            });
+        });
+    </script>
+}
+
+@functions {
+    string GetStatusBadgeClass(ClaimStatus status)
+    {
+        return status switch
+        {
+            ClaimStatus.Pending => "status-pending",
+            ClaimStatus.ApprovedByCoordinator => "status-coordinator-approved",
+            ClaimStatus.ApprovedByManager => "status-manager-approved",
+            ClaimStatus.RejectedByCoordinator or ClaimStatus.RejectedByManager => "status-rejected",
+            ClaimStatus.Settled => "status-settled",
+            _ => "status-pending"
+        };
+    }
+
+    string GetStatusIcon(ClaimStatus status)
+    {
+        return status switch
+        {
+            ClaimStatus.Pending => "fas fa-clock",
+            ClaimStatus.ApprovedByCoordinator => "fas fa-user-check",
+            ClaimStatus.ApprovedByManager => "fas fa-user-tie",
+            ClaimStatus.RejectedByCoordinator or ClaimStatus.RejectedByManager => "fas fa-times",
+            ClaimStatus.Settled => "fas fa-check-double",
+            _ => "fas fa-file"
+        };
+    }
+
+    string GetStatusDisplayText(ClaimStatus status)
+    {
+        return status switch
+        {
+            ClaimStatus.Pending => "Pending Review",
+            ClaimStatus.ApprovedByCoordinator => "Coordinator Approved",
+            ClaimStatus.RejectedByCoordinator => "Rejected by Coordinator",
+            ClaimStatus.ApprovedByManager => "Manager Approved",
+            ClaimStatus.RejectedByManager => "Rejected by Manager",
+            ClaimStatus.Settled => "Settled",
+            _ => status.ToString()
+        };
+    }
+
+    string GetLastActionTime(Claim claim)
+    {
+        return claim.Status switch
+        {
+            ClaimStatus.Pending => "Awaiting initial review",
+            ClaimStatus.ApprovedByCoordinator => "Ready for manager",
+            ClaimStatus.RejectedByCoordinator => "Coordinator action",
+            ClaimStatus.ApprovedByManager => "Final approval",
+            ClaimStatus.RejectedByManager => "Manager action",
+            ClaimStatus.Settled => "Completed",
+            _ => "Processing"
+        };
+    }
+
+    int GetProgressPercentage(ClaimStatus status)
+    {
+        return status switch
+        {
+            ClaimStatus.Pending => 25,
+            ClaimStatus.ApprovedByCoordinator => 50,
+            ClaimStatus.RejectedByCoordinator => 100,
+            ClaimStatus.ApprovedByManager => 75,
+            ClaimStatus.RejectedByManager => 100,
+            ClaimStatus.Settled => 100,
+            _ => 0
+        };
+    }
+
+    string GetProgressBarClass(ClaimStatus status)
+    {
+        return status switch
+        {
+            ClaimStatus.Pending => "progress-pending",
+            ClaimStatus.ApprovedByCoordinator => "progress-coordinator",
+            ClaimStatus.ApprovedByManager => "progress-manager",
+            ClaimStatus.Settled => "progress-complete",
+            ClaimStatus.RejectedByCoordinator or ClaimStatus.RejectedByManager => "progress-rejected",
+            _ => "progress-pending"
+        };
+    }
+}

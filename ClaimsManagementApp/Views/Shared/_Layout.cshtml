@@ -1,0 +1,366 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Claims Management System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-surface: #161b22;
+            --bg-elevated: #1c2129;
+            --primary-cyan: #00f5ff;
+            --primary-purple: #7b61ff;
+            --accent-pink: #ff2e7a;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --glow-cyan: rgba(0, 245, 255, 0.15);
+            --glow-purple: rgba(123, 97, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle at 20% 80%, rgba(123, 97, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0, 245, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(255, 46, 122, 0.05) 0%, transparent 50%);
+                pointer-events: none;
+                z-index: -1;
+            }
+
+        /* Modern Header */
+        .navbar-neon {
+            background: rgba(22, 27, 34, 0.85) !important;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand-modern {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .navbar-brand-modern i {
+                background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                font-size: 1.8rem;
+            }
+
+        .nav-link-modern {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem !important;
+            margin: 0 0.25rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .nav-link-modern::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .nav-link-modern:hover::before {
+                left: 100%;
+            }
+
+            .nav-link-modern:hover {
+                color: var(--text-primary) !important;
+                background: rgba(48, 54, 61, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .nav-link-modern i {
+                width: 20px;
+                text-align: center;
+                margin-right: 0.5rem;
+                color: var(--primary-cyan);
+            }
+
+        .navbar-toggler-tech {
+            border: 1px solid var(--border-color);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+        }
+
+            .navbar-toggler-tech:focus {
+                box-shadow: 0 0 0 2px var(--glow-cyan);
+            }
+
+        /* Main Content */
+        .container-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .main-content {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .main-content::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--primary-cyan), var(--primary-purple), transparent);
+            }
+
+        /* Modern Footer */
+        .footer-tech {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+            .footer-tech::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 200px;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+            }
+
+            .footer-tech a {
+                color: var(--text-secondary);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+                .footer-tech a:hover {
+                    color: var(--primary-cyan);
+                }
+
+        .version-badge {
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink)) !important;
+            border: none;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .navbar-collapse
+
+        {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+
+        .nav-link-modern {
+            margin: 0.25rem 0;
+            border-radius: 8px;
+        }
+
+        .main-content {
+            padding: 1.5rem;
+            border-radius: 16px;
+        }
+
+        }
+
+        /* Animation for page load */
+        @@keyframes fadeInUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .main-content {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-surface);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            border-radius: 4px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, var(--primary-purple), var(--accent-pink));
+            }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-neon">
+            <div class="container">
+                <a class="navbar-brand-modern" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>ClaimsPro</span>
+                </a>
+                <button class="navbar-toggler navbar-toggler-tech" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-modern" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-modern" asp-controller="Lecturer" asp-action="Index">
+                                <i class="fas fa-user-graduate"></i>Lecturer Portal
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-modern" asp-controller="Coordinator" asp-action="PendingClaims">
+                                <i class="fas fa-user-tie"></i>Coordinator Portal
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-modern" asp-controller="Manager" asp-action="PendingClaims">
+                                <i class="fas fa-user-cog"></i>Manager Portal
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-modern" asp-controller="HR" asp-action="Dashboard">
+                                <i class="fas fa-users"></i>HR Portal
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-main">
+        <main role="main" class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer-tech">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    &copy; 2024 - Claims Management System - <a asp-controller="Home" asp-action="Index">PROG6212 Assignment</a>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="badge version-badge">v2.0</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Add interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar-neon');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.style.background = 'rgba(22, 27, 34, 0.95)';
+                    navbar.style.backdropFilter = 'blur(20px)';
+                } else {
+                    navbar.style.background = 'rgba(22, 27, 34, 0.85)';
+                    navbar.style.backdropFilter = 'blur(15px)';
+                }
+            });
+
+            // Add hover effects to nav items
+            const navLinks = document.querySelectorAll('.nav-link-modern');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
