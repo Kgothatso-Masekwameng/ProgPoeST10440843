@@ -42,3 +42,38 @@ Automatic calculations
 Digital record keeping
 
 Reporting and dashboard insights
+
+⭐ Features
+👨‍🏫 Lecturer Features
+
+Submit monthly claims online
+
+Upload or input hours worked per module
+
+Track claim approval status
+
+Review historical claims
+
+🛠️ Admin Features
+
+View pending, approved, and rejected claims
+
+Validate submitted claim details
+
+Approve or reject lecturer submissions
+
+Generate reports
+
+Manage lecturer information and user accounts
+
+📊 System Features
+
+Automated total calculations
+
+SQL database integration
+
+Role-based access (Admin / Lecturer)
+
+Clean, modern user interface
+
+Dashboard insights (workload, claims, totals)
