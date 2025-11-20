@@ -104,3 +104,18 @@ Authentication	ASP.NET Core Identity
 Frontend	Bootstrap 5, HTML, CSS
 IDE	Visual Studio 2022
 Version Control	Git & GitHub
+
+⚙️ Installation & Setup
+1️⃣ Clone the Repository
+git clone https://github.com/YourUsername/ContractMonthlyClaimSystem.git
+
+2️⃣ Open the Project
+
+Open the solution file (.sln) in Visual Studio 2022.
+
+3️⃣ Restore Dependencies
+
+Visual Studio will automatically restore NuGet packages.
+If not, run:
+
+dotnet restore
