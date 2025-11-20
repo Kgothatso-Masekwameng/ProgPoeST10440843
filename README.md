@@ -128,3 +128,21 @@ In appsettings.json, update your connection string:
 "ConnectionStrings": {
   "DefaultConnection": "Server=YOUR_SERVER;Database=ClaimsDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=true;"
 }
+Apply Migrations
+dotnet ef database update
+
+🔄 How It Works (Workflow)
+
+Lecturer logs into the system
+
+Lecturer submits a new claim for the month
+
+System validates the submission
+
+Admin reviews the claim
+
+Admin approves or rejects
+
+System stores and updates records
+
+Reports and dashboards are updated automatically
