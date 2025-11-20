@@ -77,3 +77,19 @@ Role-based access (Admin / Lecturer)
 Clean, modern user interface
 
 Dashboard insights (workload, claims, totals)
+
+🏗️ System Architecture
+
+The system is built using a layered architecture:
+
+Presentation Layer (Views)
+│
+├── MVC Controllers
+│
+├── Business Logic Layer
+│
+└── Data Access Layer (Repository Pattern + EF Core)
+      └── SQL Server Database
+
+
+This structure improves maintainability, scalability, and separation of concerns.
