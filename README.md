@@ -146,3 +146,35 @@ Admin approves or rejects
 System stores and updates records
 
 Reports and dashboards are updated automatically
+
+📁 Project Structure
+ContractMonthlyClaimSystem/
+│
+├── Controllers/      → Application controllers
+├── Models/           → Entity classes
+├── Views/            → Razor views (UI)
+├── Data/             → DB Context & Seed Data
+├── Migrations/       → EF Core migrations
+├── Services/         → Business logic services
+├── wwwroot/          → CSS, JS, Bootstrap, images
+├── appsettings.json  
+└── Program.cs
+
+🚀 Future Enhancements
+
+Add file attachments for claims
+
+Automated email notifications
+
+Export to PDF or Excel
+
+Monthly summaries for administrators
+
+Mobile-friendly view
+
+Analytics dashboard (charts and trends)
+
+👤 Author
+
+Kgothatso Masekwameng
+Contract Monthly Claim System Developer
