@@ -25,3 +25,20 @@ Screenshots (Optional)
 Future Enhancements
 
 Author
+
+📝 Overview
+
+The Contract Monthly Claim System was developed to automate and manage the monthly claim process for contract lecturers.
+This system replaces manual processes such as spreadsheets, emails, and paper forms with a fully digital workflow that ensures accuracy, security, and convenience.
+
+The system supports:
+
+Lecturer claim submissions
+
+Admin review & approval
+
+Automatic calculations
+
+Digital record keeping
+
+Reporting and dashboard insights
